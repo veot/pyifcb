@@ -333,21 +333,25 @@ class DataDirectory(object):
 
     Provides a dict-like interface allowing access to FilesetBins by LID.
     """
-    def __init__(self, path='.', whitelist=DEFAULT_WHITELIST, blacklist=DEFAULT_BLACKLIST, filter=lambda x: True):
+    def __init__(self, path='.', whitelist=DEFAULT_WHITELIST, blacklist=DEFAULT_BLACKLIST,
+                 filter=lambda x: True, validate=True):
         """
         :param path: the path of the data directory
         :param whitelist: a list of directory names to allow
         :param blacklist: a list of directory names to disallow
+        :param validate: whether to validate each fileset path
         """
         self.path = path
         self.whitelist = whitelist
         self.blacklist = blacklist
         self.filter = filter
+        self.validate = validate
     def list_filesets(self):
         """
         Yield all filesets.
         """
-        for dirpath, basename in list_filesets(self.path, whitelist=self.whitelist, blacklist=self.blacklist):
+        for dirpath, basename in list_filesets(self.path, whitelist=self.whitelist,
+                                               blacklist=self.blacklist, validate=self.validate):
             basepath = os.path.join(dirpath, basename)
             fs = Fileset(basepath)
             if self.filter(fs):
